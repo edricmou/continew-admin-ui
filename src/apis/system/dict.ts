@@ -27,7 +27,12 @@ export function updateDict(data: any, id: string) {
 
 /** @desc 删除字典 */
 export function deleteDict(id: string) {
-  return http.del(`${BASE_URL}/${id}`)
+  return http.del(`${BASE_URL}`, { ids: [id] })
+}
+
+/** @desc 清除字典缓存 */
+export function clearDictCache(code: string) {
+  return http.del(`${BASE_URL}/cache/${code}`)
 }
 
 /** @desc 查询字典项列表 */
@@ -52,5 +57,5 @@ export function updateDictItem(data: any, id: string) {
 
 /** @desc 删除字典项 */
 export function deleteDictItem(id: string) {
-  return http.del(`${BASE_URL}/item/${id}`)
+  return http.del(`${BASE_URL}/item`, { ids: [id] })
 }

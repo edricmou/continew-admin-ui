@@ -4,7 +4,10 @@
       <a-descriptions-item label="ID">{{ dataDetail?.id }}</a-descriptions-item>
       <a-descriptions-item label="名称">{{ dataDetail?.name }}</a-descriptions-item>
       <a-descriptions-item label="Access Key" :span="2"><CellCopy :content="dataDetail?.accessKey" /></a-descriptions-item>
-      <a-descriptions-item label="状态"><GiCellStatus :status="dataDetail?.status" /></a-descriptions-item>
+      <a-descriptions-item label="状态">
+        <a-tag v-if="dataDetail?.status === 1" color="green">启用</a-tag>
+        <a-tag v-else color="red">禁用</a-tag>
+      </a-descriptions-item>
       <a-descriptions-item label="失效时间">{{ dataDetail?.expireTime }}</a-descriptions-item>
       <a-descriptions-item label="创建人">{{ dataDetail?.createUserString }}</a-descriptions-item>
       <a-descriptions-item label="创建时间">{{ dataDetail?.createTime }}</a-descriptions-item>

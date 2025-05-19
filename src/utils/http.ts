@@ -1,6 +1,6 @@
-import type { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import axios from 'axios'
 import qs from 'query-string'
+import type { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { useUserStore } from '@/stores'
 import { getToken } from '@/utils/auth'
 import modalErrorWrapper from '@/utils/modal-error-wrapper'
@@ -37,7 +37,10 @@ const http: AxiosInstance = axios.create({
 
 const handleError = (msg: string) => {
   if (msg.length >= 15) {
-    return notificationErrorWrapper(msg || '服务器端错误')
+    return notificationErrorWrapper({
+      content: msg || '服务器端错误',
+      duration: 5 * 1000,
+    })
   }
   return messageErrorWrapper({
     content: msg || '服务器端错误',
@@ -73,7 +76,24 @@ http.interceptors.response.use(
     const { data } = response
     const { success, code, msg } = data
 
-    if (response.request.responseType === 'blob' || success) {
+    if (response.request.responseType === 'blob') {
+      const contentType = data.type
+      if (contentType.startsWith('application/json')) {
+        const reader = new FileReader()
+        reader.readAsText(data)
+        reader.onload = () => {
+          const { success, msg } = JSON.parse(reader.result as string)
+          if (!success) {
+            handleError(msg)
+          }
+        }
+        return Promise.reject(msg)
+      } else {
+        return response
+      }
+    }
+
+    if (success) {
       return response
     }
 
